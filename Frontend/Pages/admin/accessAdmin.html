@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Access Management</title>
-    <link href="../css/admin-services.css" rel="stylesheet">
+    <title>Доступы</title>
+    <link href="../../css/admin-services.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -14,7 +14,7 @@
         <div class="profile">
             <img src="https://via.placeholder.com/80" alt="Profile">
             <h5>Admin</h5>
-            <p>admin@example.com</p>
+            <p>admin@mail.com</p>
         </div>
         <a href="./servicesAdmin.html" class="nav-link">🛠 Сервисы</a>
         <a href="./calendarAdmin.html" class="nav-link">📅 Календарь</a>
@@ -23,14 +23,17 @@
         <a href="./usersAdmin.html" class="nav-link">👥 Пользователи</a>
         <a href="./problemsAdmin.html" class="nav-link">🚫 Проблемы</a>
         <a href="./dashboardAdmin.html" class="nav-link">📈 Диаграммы</a>
+        <div class="logout">
+            <button onclick="location.href='../Auth/login.html'" class="logout-btn" title="Logout">⏻</button>
+        </div>
     </div>
 
     <nav class="navbar">
         <div class="container-fluid">
-            <h3 class="page-title">Access Management</h3>
+            <h3 class="page-title">Администрирование доступов</h3>
             <div class="d-flex">
                 <input id="searchInput" class="form-control me-2" type="search" placeholder="Search..." aria-label="Search">
-                <button class="btn btn-outline-success" onclick="filterRequests()">Search</button>
+                <button class="btn btn-outline-success" onclick="filterRequests()">Поиск</button>
             </div>
         </div>
         <hr class="section-divider">
@@ -38,18 +41,18 @@
 
     <div class="content">
         <div class="table-container">
-            <h3 class="mb-4">User Access Requests</h3>
+            <h3 class="mb-4">Запросы пользователей</h3>
             <table class="table table-bordered">
                 <thead class="table-success">
                     <tr>
                         <th>#</th>
-                        <th>User</th>
-                        <th>Department</th>
-                        <th>Service</th>
-                        <th>Submission Date</th>
-                        <th>Access Level</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Пользователь</th>
+                        <th>Отдел</th>
+                        <th>Сервис</th>
+                        <th>Дата отправки</th>
+                        <th>Уровень доступа</th>
+                        <th>Статус</th>
+                        <th>Действие</th>
                     </tr>
                 </thead>
                 <tbody id="accessTable">

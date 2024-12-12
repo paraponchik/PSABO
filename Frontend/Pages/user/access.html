@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Requests</title>
-    <link href="../css/services.css" rel="stylesheet">
+    <title>Доступы</title>
+    <link href="../../css/services.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .status-pending {
@@ -42,12 +42,12 @@
     <div class="sidebar">
         <div class="profile">
             <img src="https://via.placeholder.com/80" alt="Profile">
-            <h5>John Doe</h5>
-            <p>johndoe@example.com</p>
+            <h5>Anton Hatouchyts</h5>
+            <p>gotov@gmail.com</p>
         </div>
-        <a href="./services.html" class="nav-link">🛠 Services</a>
-        <a href="./calendar.html" class="nav-link">📅 Calendar</a>
-        <a href="./access.html" class="nav-link active">🔑 Access</a>
+        <a href="./services.html" class="nav-link">🛠 Сервисы</a>
+        <a href="./calendar.html" class="nav-link">📅 Календарь</a>
+        <a href="./access.html" class="nav-link active">🔑 Доступы</a>
         <a href="./problems.html" class="nav-link">🚫 Проблемы</a>
         <div class="logout">
             <button onclick="location.href='./login.html'" class="logout-btn" title="Logout">⏻</button>
@@ -56,30 +56,30 @@
 
     <nav class="navbar">
         <div class="container-fluid">
-            <h3 class="page-title">Access</h3>
+            <h3 class="page-title">Доступы</h3>
         </div>
         <hr class="section-divider">
     </nav>
 
     <div class="content">
         <div class="table-container">
-            <h3 class="mb-4">Your Access Requests</h3>
+            <h3 class="mb-4">Запросы на доступ</h3>
             <table class="table table-bordered">
                 <thead class="table-success">
                     <tr>
-                        <th>Service</th>
-                        <th>Submission Date</th>
-                        <th>Status</th>
-                        <th>Granted Rights</th>
-                        <th>Actions</th>
-                        <th>Print</th>
+                        <th>Сервис</th>
+                        <th>Дата создания</th>
+                        <th>Статус</th>
+                        <th>Назначеные права</th>
+                        <th>Действие</th>
+                        <th>Печать</th>
                     </tr>
                 </thead>
                 <tbody id="requestTable">
                     <!-- Requests will populate here dynamically -->
                 </tbody>
             </table>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#requestModal">Submit New Request</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#requestModal">Отправить запрос на доступ</button>
         </div>
 
         <!-- Modal for submitting a new request -->
@@ -87,20 +87,20 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="requestModalLabel">Submit Access Request</h5>
+                        <h5 class="modal-title" id="requestModalLabel">Отправить запрос</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="requestForm">
                             <div class="mb-3">
-                                <label for="serviceSelect" class="form-label">Select Service</label>
+                                <label for="serviceSelect" class="form-label">Выбрать сервис</label>
                                 <select id="serviceSelect" class="form-select">
-                                    <option value="Email Service">Email Service</option>
-                                    <option value="File Storage">File Storage</option>
-                                    <option value="CRM System">CRM System</option>
+                                    <option value="Email Service">Почта</option>
+                                    <option value="File Storage">FTP с БГУИР</option>
+                                    <option value="CRM System">Directum</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button type="submit" class="btn btn-success">Отправить</button>
                         </form>
                     </div>
                 </div>
@@ -122,9 +122,9 @@
                     <td>${req.date}</td>
                     <td><span class="${getStatusClass(req.status)}">${req.status}</span></td>
                     <td>${req.rights || 'Not Assigned'}</td>
-                    <td><span class="button-action button-cancel" onclick="cancelRequest(${index})">Cancel</span></td>
+                    <td><span class="button-action button-cancel" onclick="cancelRequest(${index})">Отмена</span></td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="printRequest(${index})">Print</button>
+                        <button class="btn btn-primary btn-sm" onclick="printRequest(${index})">Печать</button>
                     </td>
                 </tr>
             `).join('');
