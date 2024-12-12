@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <link href="../css/services.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .tile {
+            background-color: #e8f5e9;
+            color: #388e3c;
+            border-radius: 8px;
+            text-align: center;
+            padding: 20px;
+            margin: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-tile {
+            cursor: pointer;
+        }
+
+        .add-tile {
+            background-color: #e0f7fa;
+            color: #00796b;
+            border: 2px dashed #00796b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .modal-header {
+            background-color: #388e3c;
+            color: white;
+        }
+
+        .modal-footer button {
+            margin-left: 10px;
+        }
+
+        .selected-service {
+            background-color: #c8e6c9;
+            border: 2px solid #388e3c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://via.placeholder.com/80" alt="Profile">
+            <h5>John Doe</h5>
+            <p>johndoe@example.com</p>
+        </div>
+        <a href="./services.html" class="nav-link active">🛠 Services</a>
+        <a href="./calendar.html" class="nav-link">📅 Calendar</a>
+        <a href="./access.html" class="nav-link">🔑 Access</a>
+        <a href="./problems.html" class="nav-link">🚫 Проблемы</a>
+        <div class="logout">
+            <button onclick="location.href='./login.html'" class="logout-btn" title="Logout">⏻</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <h3 class="page-title">Services</h3>
+                <button id="editLinksButton" class="btn btn-success">Edit Links</button>
+            </div>
+        </div>
+        <hr class="section-divider">
+    </nav>
+
+    <div class="content">
+        <div class="tiles" id="serviceTiles">
+            <div class="tile add-tile" id="addServiceTile" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                <span>+</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for selecting multiple services -->
+    <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addServiceModalLabel">Choose Services</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="availableServicesContainer">
+                        <!-- Services will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="addSelectedServicesButton" type="button" class="btn btn-success">Add Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for editing links -->
+    <div class="modal fade" id="linksModal" tabindex="-1" aria-labelledby="linksModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="linksModalLabel">Edit Services</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="linksList" class="list-group">
+                        <!-- List of links will be dynamically added here -->
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const serviceTiles = document.getElementById('serviceTiles');
+        const addServiceTile = document.getElementById('addServiceTile');
+        const editLinksButton = document.getElementById('editLinksButton');
+        const linksModal = new bootstrap.Modal(document.getElementById('linksModal'));
+        const linksList = document.getElementById('linksList');
+        const availableServicesContainer = document.getElementById('availableServicesContainer');
+        const addSelectedServicesButton = document.getElementById('addSelectedServicesButton');
+
+        const availableServices = [
+            "Service 1",
+            "Service 2",
+            "Service 3"
+        ];
+
+        let userServices = JSON.parse(localStorage.getItem('userServices')) || [];
+        let selectedServices = [];
+
+        function updateDisplay() {
+            serviceTiles.innerHTML = '';
+
+            userServices.forEach((serviceName) => {
+                const newTile = document.createElement('div');
+                newTile.classList.add('tile');
+                newTile.innerHTML = `<a href="#">${serviceName}</a>`;
+                newTile.onclick = () => alert(`Navigating to ${serviceName}`); // Replace with actual navigation logic
+                serviceTiles.appendChild(newTile);
+            });
+
+            serviceTiles.appendChild(addServiceTile);
+        }
+
+        function renderAvailableServices() {
+            availableServicesContainer.innerHTML = '';
+
+            availableServices.forEach((serviceName) => {
+                const serviceCard = document.createElement('div');
+                serviceCard.classList.add('col-md-4', 'mb-3');
+                serviceCard.innerHTML = `
+                    <div class="card service-tile" onclick="toggleServiceSelection('${serviceName}')">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${serviceName}</h5>
+                        </div>
+                    </div>
+                `;
+                availableServicesContainer.appendChild(serviceCard);
+            });
+        }
+
+        function toggleServiceSelection(serviceName) {
+            if (selectedServices.includes(serviceName)) {
+                selectedServices = selectedServices.filter(service => service !== serviceName);
+            } else {
+                selectedServices.push(serviceName);
+            }
+            updateServiceCardStyles();
+        }
+
+        function updateServiceCardStyles() {
+            const cards = availableServicesContainer.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent;
+                if (selectedServices.includes(title)) {
+                    card.classList.add('selected-service');
+                } else {
+                    card.classList.remove('selected-service');
+                }
+            });
+        }
+
+        addSelectedServicesButton.addEventListener('click', () => {
+            selectedServices.forEach(service => {
+                if (!userServices.includes(service)) {
+                    userServices.push(service);
+                }
+            });
+            localStorage.setItem('userServices', JSON.stringify(userServices));
+            selectedServices = [];
+            updateDisplay();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addServiceModal'));
+            modal.hide();
+        });
+
+        editLinksButton.addEventListener('click', () => {
+            renderLinksList();
+            linksModal.show();
+        });
+
+        function renderLinksList() {
+            linksList.innerHTML = '';
+            userServices.forEach((serviceName) => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                listItem.innerHTML = `
+                    <span>${serviceName}</span>
+                    <button class="btn btn-sm btn-danger" onclick="deleteService('${serviceName}')">Delete</button>
+                `;
+                linksList.appendChild(listItem);
+            });
+        }
+
+        function deleteService(serviceName) {
+            userServices = userServices.filter(service => service !== serviceName);
+            localStorage.setItem('userServices', JSON.stringify(userServices));
+            updateDisplay();
+            renderLinksList();
+        }
+        
+// Initialize the application
+updateDisplay();
+renderAvailableServices();
+</script>
+</body>
+
+</html>
