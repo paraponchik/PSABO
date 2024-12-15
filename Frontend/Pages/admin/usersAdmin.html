@@ -126,8 +126,14 @@
         const savePasswordButton = document.getElementById('savePasswordButton');
 
         let users = JSON.parse(localStorage.getItem('users')) || [
-            { id: 1, fullName: "John Doe", department: "IT", email: "john.doe@example.com" },
-            { id: 2, fullName: "Jane Smith", department: "HR", email: "jane.smith@example.com" }
+            { id: 1, fullName: "Антон Готовчиц", department: "IT", email: "john.doe@example.com" },
+            { id: 2, fullName: "Вадим Прокопьюк", department: "HR", email: "jane.smith@example.com" },
+            { id: 3, fullName: "Надежда Готовчиц", department: "IT", email: "john.doe@example.com" },
+            { id: 4, fullName: "Роман Никифоров", department: "HR", email: "jane.smith@example.com" },
+            { id: 5, fullName: "Данила Дыдышко", department: "IT", email: "john.doe@example.com" },
+            { id: 6, fullName: "Кирилл Буйко", department: "HR", email: "jane.smith@example.com" },
+            { id: 7, fullName: "Дарья Чеботарь", department: "IT", email: "john.doe@example.com" },
+            { id: 8, fullName: "Сергей Ловгач", department: "HR", email: "jane.smith@example.com" }
         ];
 
         function loadUsers() {

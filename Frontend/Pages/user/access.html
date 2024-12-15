@@ -50,7 +50,7 @@
         <a href="./access.html" class="nav-link active">🔑 Доступы</a>
         <a href="./problems.html" class="nav-link">🚫 Проблемы</a>
         <div class="logout">
-            <button onclick="location.href='./login.html'" class="logout-btn" title="Logout">⏻</button>
+            <button onclick="location.href='../Auth/login.html'" class="logout-btn" title="Logout">⏻</button>
         </div>
     </div>
 
@@ -121,7 +121,7 @@
                     <td>${req.service}</td>
                     <td>${req.date}</td>
                     <td><span class="${getStatusClass(req.status)}">${req.status}</span></td>
-                    <td>${req.rights || 'Not Assigned'}</td>
+                    <td>${req.rights || 'User'}</td>
                     <td><span class="button-action button-cancel" onclick="cancelRequest(${index})">Отмена</span></td>
                     <td>
                         <button class="btn btn-primary btn-sm" onclick="printRequest(${index})">Печать</button>
@@ -195,7 +195,7 @@
                             <p><strong>Service:</strong> ${request.service}</p>
                             <p><strong>Date:</strong> ${request.date}</p>
                             <p><strong>Status:</strong> ${request.status}</p>
-                            <p><strong>Granted Rights:</strong> ${request.rights || 'Not Assigned'}</p>
+                            <p><strong>Granted Rights:</strong> ${request.rights || 'User'}</p>
                         </div>
                     </body>
                 </html>
