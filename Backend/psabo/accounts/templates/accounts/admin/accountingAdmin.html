@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учет</title>
+    <link href="../../css/admin-services.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://via.placeholder.com/80" alt="Profile">
+            <h5>Admin</h5>
+            <p>admin@mail.com</p>
+        </div>
+        <a href="./servicesAdmin.html" class="nav-link">🛠 Сервисы</a>
+        <a href="./calendarAdmin.html" class="nav-link">📅 Календарь</a>
+        <a href="./accessAdmin.html" class="nav-link">🔑 Доступы</a>
+        <a href="./accountingAdmin.html" class="nav-link active">📊 Учет</a>
+        <a href="./usersAdmin.html" class="nav-link">👥 Пользователи</a>
+        <a href="./problemsAdmin.html" class="nav-link">🚫 Проблемы</a>
+        <a href="./dashboardAdmin.html" class="nav-link">📈 Диаграммы</a>
+        <div class="logout">
+            <button onclick="location.href='../Auth/login.html'" class="logout-btn" title="Logout">⏻</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h3 class="page-title">Учет компьютерной техники</h3>
+            <div class="d-flex">
+                <input id="searchInput" class="form-control me-2" type="text" placeholder="Search..." aria-label="Search">
+                <button class="btn btn-outline-success" onclick="filterInventory()">Поиск</button>
+                <button class="btn btn-success ms-2" onclick="exportToExcel()">Экспорт</button>
+            </div>
+        </div>
+        <hr class="section-divider">
+    </nav>
+
+    <div class="content">
+        <div class="table-container">
+            <h3 class="mb-4">Компьютерная техника</h3>
+            <table class="table table-bordered table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th>#</th>
+                        <th>Инвентарный</th>
+                        <th>Владелец</th>
+                        <th>Отдел</th>
+                        <th>IP-адрес</th>
+                        <th>Детали</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTable">
+                    <!-- Records will populate dynamically -->
+                </tbody>
+            </table>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addComputerModal">Добавить новый компьютер</button>
+        </div>
+
+        <!-- Modal for Adding/Editing Computers -->
+        <div class="modal fade" id="addComputerModal" tabindex="-1" aria-labelledby="addComputerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addComputerModalLabel">Добавить/Редактировать компьютер</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="computerForm">
+                            <input type="hidden" id="computerId" name="computerId">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="inventoryNumber" class="form-label">Инвентарный</label>
+                                    <input type="text" class="form-control" id="inventoryNumber" name="inventoryNumber" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="serialNumber" class="form-label">Серийный</label>
+                                    <input type="text" class="form-control" id="serialNumber" name="serialNumber" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="manufacturer" class="form-label">Производитель</label>
+                                    <input type="text" class="form-control" id="manufacturer" name="manufacturer" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cpuModel" class="form-label">Модель процессора</label>
+                                    <input type="text" class="form-control" id="cpuModel" name="cpuModel" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ramSize" class="form-label">ОЗУ (GB)</label>
+                                    <input type="number" class="form-control" id="ramSize" name="ramSize" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="diskSize" class="form-label">Жесткий диск (GB)</label>
+                                    <input type="number" class="form-control" id="diskSize" name="diskSize" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="monitorModel" class="form-label">Модеь монитора</label>
+                                    <input type="text" class="form-control" id="monitorModel" name="monitorModel" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="osVersion" class="form-label">Версия ОС</label>
+                                    <input type="text" class="form-control" id="osVersion" name="osVersion" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="officeVersion" class="form-label">Версия Офиса</label>
+                                    <input type="text" class="form-control" id="officeVersion" name="officeVersion" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ipAddress" class="form-label">IP-адрес</label>
+                                    <input type="text" class="form-control" id="ipAddress" name="ipAddress" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="pcName" class="form-label">Имя ПК в сети</label>
+                                    <input type="text" class="form-control" id="pcName" name="pcName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="roomNumber" class="form-label">Комната</label>
+                                    <input type="text" class="form-control" id="roomNumber" name="roomNumber" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ownerName" class="form-label">ФИО владельца</label>
+                                    <input type="text" class="form-control" id="ownerName" name="ownerName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="department" class="form-label">Отдел</label>
+                                    <input type="text" class="form-control" id="department" name="department" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" id="saveComputerButton">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Viewing Details -->
+        <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailsModalLabel">Детали компьютера</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="detailsContent">
+                        <!-- Details will populate dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const inventoryTable = document.getElementById('inventoryTable');
+        const searchInput = document.getElementById('searchInput');
+        const computerForm = document.getElementById('computerForm');
+        const saveComputerButton = document.getElementById('saveComputerButton');
+        const detailsContent = document.getElementById('detailsContent');
+        let inventory = JSON.parse(localStorage.getItem('computerInventory')) || [];
+
+        function loadInventory(filteredInventory = null) {
+            const dataToRender = filteredInventory || inventory;
+            inventoryTable.innerHTML = dataToRender.map((computer, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${computer.inventoryNumber}</td>
+                    <td>${computer.ownerName}</td>
+                    <td>${computer.department}</td>
+                    <td>${computer.ipAddress}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm" onclick="viewDetails(${index})">Details</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editComputer(${index})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteComputer(${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function viewDetails(index) {
+            const computer = inventory[index];
+            detailsContent.innerHTML = `
+                <p><strong>Inventory Number:</strong> ${computer.inventoryNumber}</p>
+                <p><strong>Serial Number:</strong> ${computer.serialNumber}</p>
+                <p><strong>Manufacturer:</strong> ${computer.manufacturer}</p>
+                <p><strong>CPU Model:</strong> ${computer.cpuModel}</p>
+                <p><strong>RAM Size:</strong> ${computer.ramSize} GB</p>
+                <p><strong>Disk Size:</strong> ${computer.diskSize} GB</p>
+                <p><strong>Monitor Model:</strong> ${computer.monitorModel}</p>
+                <p><strong>OS Version:</strong> ${computer.osVersion}</p>
+                <p><strong>Office Version:</strong> ${computer.officeVersion}</p>
+                <p><strong>IP Address:</strong> ${computer.ipAddress}</p>
+                <p><strong>PC Name:</strong> ${computer.pcName}</p>
+                <p><strong>Room Number:</strong> ${computer.roomNumber}</p>
+                <p><strong>Owner Name:</strong> ${computer.ownerName}</p>
+                <p><strong>Department:</strong> ${computer.department}</p>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            modal.show();
+        }
+
+        function editComputer(index) {
+            const computer = inventory[index];
+            Object.keys(computer).forEach(key => {
+                const input = computerForm.querySelector(`[name="${key}"]`);
+                if (input) input.value = computer[key];
+            });
+            saveComputerButton.setAttribute('data-index', index);
+            const modal = new bootstrap.Modal(document.getElementById('addComputerModal'));
+            modal.show();
+        }
+
+        function deleteComputer(index) {
+            inventory.splice(index, 1);
+            localStorage.setItem('computerInventory', JSON.stringify(inventory));
+            loadInventory();
+        }
+
+        saveComputerButton.addEventListener('click', () => {
+            const computer = {};
+            new FormData(computerForm).forEach((value, key) => {
+                computer[key] = value;
+            });
+
+            const index = saveComputerButton.getAttribute('data-index');
+            if (index !== null) {
+                inventory[index] = computer;
+            } else {
+                inventory.push(computer);
+            }
+
+            localStorage.setItem('computerInventory', JSON.stringify(inventory));
+            loadInventory();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addComputerModal'));
+            modal.hide();
+            computerForm.reset();
+            saveComputerButton.removeAttribute('data-index');
+        });
+
+        function filterInventory() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredInventory = inventory.filter(computer =>
+                computer.inventoryNumber.toLowerCase().includes(searchTerm) ||
+                computer.ownerName.toLowerCase().includes(searchTerm) ||
+                computer.department.toLowerCase().includes(searchTerm) ||
+                computer.ipAddress.toLowerCase().includes(searchTerm)
+            );
+            loadInventory(filteredInventory);
+        }
+
+        function exportToExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(inventory);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+            XLSX.writeFile(workbook, "Inventory.xlsx");
+        }
+
+        loadInventory();
+    </script>
+</body>
+
+</html>

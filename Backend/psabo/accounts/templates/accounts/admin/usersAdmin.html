@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи</title>
+    <link href="../../css/admin-services.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://via.placeholder.com/80" alt="Profile">
+            <h5>Admin</h5>
+            <p>admin@mail.com</p>
+        </div>
+        <a href="./servicesAdmin.html" class="nav-link">🛠 Сервисы</a>
+        <a href="./calendarAdmin.html" class="nav-link">📅 Календарь</a>
+        <a href="./accessAdmin.html" class="nav-link">🔑 Доступы</a>
+        <a href="./accountingAdmin.html" class="nav-link">📊 Учет</a>
+        <a href="./usersAdmin.html" class="nav-link active">👥 Пользователи</a>
+        <a href="./problemsAdmin.html" class="nav-link">🚫 Проблемы</a>
+        <a href="./dashboardAdmin.html" class="nav-link">📈 Диаграммы</a>
+        <div class="logout">
+            <button onclick="location.href='../Auth/login.html'" class="logout-btn" title="Logout">⏻</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h3 class="page-title">Администрирование пользователей</h3>
+            <div class="d-flex">
+                <input id="searchInput" class="form-control me-2" type="text" placeholder="Search..." aria-label="Search">
+                <button class="btn btn-outline-success" onclick="filterInventory()">Поиск</button>
+            </div>
+        </div>
+        <hr class="section-divider">
+    </nav>
+
+    <div class="content">
+        <div class="table-container">
+            <h3 class="mb-4">Пользователи</h3>
+            <table class="table table-bordered table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th>#</th>
+                        <th>ФИО</th>
+                        <th>Отдел</th>
+                        <th>Почта</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    <!-- Users will populate dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal for Editing Users -->
+        <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="userForm">
+                            <input type="hidden" id="userId">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Редактировать</label>
+                                <input type="text" class="form-control" id="fullName" name="fullName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="department" class="form-label">Отдел</label>
+                                <input type="text" class="form-control" id="department" name="department" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Почта</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" id="saveUserButton">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Changing Password -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Изменить пароль</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="passwordForm">
+                            <input type="hidden" id="passwordUserId">
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">Новый пароль</label>
+                                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" id="savePasswordButton">Изменить пароль</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const usersTable = document.getElementById('usersTable');
+        const userForm = document.getElementById('userForm');
+        const passwordForm = document.getElementById('passwordForm');
+        const saveUserButton = document.getElementById('saveUserButton');
+        const savePasswordButton = document.getElementById('savePasswordButton');
+
+        let users = JSON.parse(localStorage.getItem('users')) || [
+            { id: 1, fullName: "Антон Готовчиц", department: "IT", email: "john.doe@example.com" },
+            { id: 2, fullName: "Вадим Прокопьюк", department: "HR", email: "jane.smith@example.com" },
+            { id: 3, fullName: "Надежда Готовчиц", department: "IT", email: "john.doe@example.com" },
+            { id: 4, fullName: "Роман Никифоров", department: "HR", email: "jane.smith@example.com" },
+            { id: 5, fullName: "Данила Дыдышко", department: "IT", email: "john.doe@example.com" },
+            { id: 6, fullName: "Кирилл Буйко", department: "HR", email: "jane.smith@example.com" },
+            { id: 7, fullName: "Дарья Чеботарь", department: "IT", email: "john.doe@example.com" },
+            { id: 8, fullName: "Сергей Ловгач", department: "HR", email: "jane.smith@example.com" }
+        ];
+
+        function loadUsers() {
+            usersTable.innerHTML = users.map((user, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${user.fullName}</td>
+                    <td>${user.department}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editUser(${index})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">Delete</button>
+                        <button class="btn btn-primary btn-sm" onclick="changePassword(${index})">Change Password</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editUser(index) {
+            const user = users[index];
+            Object.keys(user).forEach(key => {
+                const input = userForm.querySelector(`[name="${key}"]`);
+                if (input) input.value = user[key];
+            });
+            saveUserButton.setAttribute('data-index', index);
+            const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
+        }
+
+        function deleteUser(index) {
+            users.splice(index, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            loadUsers();
+        }
+
+        function changePassword(index) {
+            const user = users[index];
+            document.getElementById('passwordUserId').value = user.id;
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        }
+
+        saveUserButton.addEventListener('click', () => {
+            const user = {};
+            new FormData(userForm).forEach((value, key) => {
+                user[key] = value;
+            });
+
+            const index = saveUserButton.getAttribute('data-index');
+            if (index !== null) {
+                users[index] = { ...users[index], ...user };
+            } else {
+                user.id = Date.now();
+                users.push(user);
+            }
+
+            localStorage.setItem('users', JSON.stringify(users));
+            loadUsers();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+            modal.hide();
+            userForm.reset();
+            saveUserButton.removeAttribute('data-index');
+        });
+
+        savePasswordButton.addEventListener('click', () => {
+            const userId = document.getElementById('passwordUserId').value;
+            const newPassword = document.getElementById('newPassword').value;
+            console.log(`Password for user with ID ${userId} changed to: ${newPassword}`);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+            modal.hide();
+            passwordForm.reset();
+        });
+
+        loadUsers();
+    </script>
+</body>
+
+</html>
