@@ -86,7 +86,10 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'accounts.User'
-
+# URL для перенаправления неавторизованных пользователей
+LOGIN_URL = '/accounts/login/'
+# URL для перенаправления после успешного входа
+LOGIN_REDIRECT_URL = '/accounts/services/'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
