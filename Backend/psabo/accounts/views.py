@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.models import User
+from .models import User  # Используем кастомную модель пользователя
 
 def login_view(request):
     if request.method == 'POST':
@@ -23,17 +23,22 @@ def register_view(request):
         full_name = request.POST.get('full_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        department = request.POST.get('department')  # Новое поле
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email already registered.')
             return render(request, 'accounts/auth/register.html')
 
         # Создание пользователя
-        user = User.objects.create_user(email=email, password=password)
-        user.full_name = full_name  # Установите дополнительные поля
+        user = User.objects.create_user(
+            email=email,
+            password=password,
+            full_name=full_name,
+            department=department  # Сохраняем department
+        )
         user.save()
 
-        login(request, user)  # Автоматически вход после регистрации
+        login(request, user)  # Автоматический вход после регистрации
         return redirect('services')  # Перенаправление на страницу сервисов
 
     return render(request, 'accounts/auth/register.html')

@@ -12,54 +12,23 @@
     <div class="register-container shadow-lg p-4 rounded" style="max-width: 400px; width: 100%; background: #fff;">
       <h2 class="text-center" style="color: black;">Create Account</h2>
       <p class="subtitle text-center text-muted">Fill in the form below to sign up</p>
-      <form method="POST" action="/accounts/register/" class="mt-4">
+      <form method="POST" action="/accounts/register/">
         {% csrf_token %}
         <div class="mb-3">
-          <input 
-            type="text" 
-            name="full_name" 
-            class="form-control" 
-            placeholder="Full Name" 
-            required
-            value="{{ full_name|default:'' }}"
-          >
+            <input type="text" class="form-control" name="full_name" placeholder="Full Name" required>
         </div>
         <div class="mb-3">
-          <input 
-            type="text" 
-            name="department" 
-            class="form-control" 
-            placeholder="Department" 
-            required
-            value="{{ department|default:'' }}"
-          >
+            <input type="text" class="form-control" name="department" placeholder="Department" required>
         </div>
         <div class="mb-3">
-          <input 
-            type="email" 
-            name="email" 
-            class="form-control" 
-            placeholder="Email Address" 
-            required
-            value="{{ email|default:'' }}"
-          >
+            <input type="email" class="form-control" name="email" placeholder="Email Address" required>
         </div>
         <div class="mb-3">
-          <input 
-            type="password" 
-            name="password" 
-            class="form-control" 
-            placeholder="Password" 
-            required
-          >
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
         </div>
-        {% if error_message %}
-          <div class="alert alert-danger" role="alert">
-            {{ error_message }}
-          </div>
-        {% endif %}
         <button type="submit" class="btn btn-success w-100">Register</button>
-      </form>
+    </form>
+    
       <div class="divider mt-4 mb-3 text-center">
         <span>Already have an account?</span>
       </div>
