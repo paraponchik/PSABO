@@ -46,3 +46,5 @@ def register_view(request):
 @login_required
 def services_view(request):
     return render(request, 'accounts/user/services.html')
+
+
