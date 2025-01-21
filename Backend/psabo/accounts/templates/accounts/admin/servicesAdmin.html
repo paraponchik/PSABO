@@ -1,41 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Сервисы</title>
-  <link href="../../css/admin-services.css" rel="stylesheet">
+  <title>Управление сервисами</title>
+  <link href="{% static 'css/admin-services.css' %}" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .tile {
+      background-color: #e8f5e9;
+      color: #388e3c;
+      border-radius: 8px;
+      text-align: center;
+      padding: 20px;
+      margin: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .tile:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .add-tile {
+      background-color: #e0f7fa;
+      color: #00796b;
+      border: 2px dashed #00796b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .selected-service {
+      background-color: #c8e6c9;
+      border: 2px solid #388e3c;
+    }
+  </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <div class="profile">
-      <img src="https://via.placeholder.com/80" alt="Profile">
-      <h5>Admin</h5>
-      <p>admin@mail.com</p>
+      <img src="../../../static/images/ava.jpg" alt="Profile">
+      <h5>{{ user.full_name }}</h5>
+      <p>{{ user.email }}</p>
     </div>
-    <a href="./servicesAdmin.html" class="nav-link active">🛠 Сервисы</a>
-    <a href="./calendarAdmin.html" class="nav-link">📅 Календарь</a>
-    <a href="./accessAdmin.html" class="nav-link">🔑 Доступы</a>
-    <a href="./accountingAdmin.html" class="nav-link">📊 Учет</a>
-    <a href="./usersAdmin.html" class="nav-link">👥 Пользователи</a>
-    <a href="./problemsAdmin.html" class="nav-link">🚫 Проблемы</a>
-    <a href="./dashboardAdmin.html" class="nav-link">📈 Диаграммы</a>
+    <a href="{% url 'admin_services' %}" class="nav-link active">🛠 Сервисы</a>
+    <a href="{% url 'admin_calendar' %}" class="nav-link">📅 Календарь</a>
+    <a href="{% url 'admin_access' %}" class="nav-link">🔑 Доступы</a>
+    <a href="{% url 'admin_accounting' %}" class="nav-link">📊 Учет</a>
+    <a href="{% url 'admin_users' %}" class="nav-link">👥 Пользователи</a>
+    <a href="{% url 'admin_problems' %}" class="nav-link">🚫 Проблемы</a>
+    <a href="{% url 'admin_dashboard' %}" class="nav-link">📈 Диаграммы</a>
     <div class="logout">
-      <button onclick="location.href='../Auth/login.html'" class="logout-btn" title="Logout">⏻</button>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn" title="Logout">⏻</button>
+      </form>
     </div>
   </div>
 
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="container-fluid">
-      <div class="search-bar">
-        <input class="form-control" type="search" placeholder="Search services..." aria-label="Search">
-      </div>
       <h3 class="page-title">Управление сервисами</h3>
     </div>
     <hr class="section-divider">
   </nav>
 
+  <!-- Content -->
   <div class="content">
     <table class="table table-bordered table-hover">
       <thead>
@@ -47,34 +85,21 @@
         </tr>
       </thead>
       <tbody id="serviceTable">
-        <!-- Placeholder rows -->
-        <tr>
-          <td>1</td>
-          <td>Directum</td>
-          <td><a href="#">https://www.directum.ru</a></td>
+        {% for service in services %}
+        <tr data-service-id="{{ service.id }}">
+          <td>{{ forloop.counter }}</td>
+          <td class="service-name">{{ service.name }}</td>
+          <td><a href="{{ service.url }}" class="service-url" target="_blank">{{ service.url }}</a></td>
           <td>
-            <button class="btn btn-warning btn-sm" onclick="editService(this)">Редактировать</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteService(this)">Удалить</button>
+            <button class="btn btn-warning btn-sm" onclick="editService('{{ service.id }}')">Редактировать</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteService('{{ service.id }}')">Удалить</button>
           </td>
         </tr>
+        {% empty %}
         <tr>
-          <td>2</td>
-          <td>МНС</td>
-          <td><a href="#">https://nalog.gov.by</a></td>
-          <td>
-            <button class="btn btn-warning btn-sm" onclick="editService(this)">Редактировать</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteService(this)">Удалить</button>
-          </td>
+          <td colspan="4" class="text-center">Нет доступных сервисов</td>
         </tr>
-        <tr>
-          <td>3</td>
-          <td>МинФин</td>
-          <td><a href="#">https://www.minfin.gov.by</a></td>
-          <td>
-            <button class="btn btn-warning btn-sm" onclick="editService(this)">Редактировать</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteService(this)">Удалить</button>
-          </td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addServiceModal">Добавить новый сервис</button>
@@ -89,27 +114,48 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="serviceForm">
-            <input type="hidden" id="serviceId">
+          <form id="serviceForm" method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="serviceId" name="service_id">
             <div class="mb-3">
               <label for="serviceName" class="form-label">Название</label>
-              <input type="text" class="form-control" id="serviceName" placeholder="Enter service name" required>
+              <input type="text" class="form-control" id="serviceName" name="name" placeholder="Введите название сервиса" required>
             </div>
             <div class="mb-3">
               <label for="serviceLink" class="form-label">Ссылка</label>
-              <input type="url" class="form-control" id="serviceLink" placeholder="Enter service link" required>
+              <input type="url" class="form-control" id="serviceLink" name="url" placeholder="Введите ссылку сервиса" required>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveServiceButton">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+          <button type="submit" class="btn btn-primary" form="serviceForm">Сохранить</button>
         </div>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../js/admin-services.js"></script>
+  <script>
+    function editService(serviceId) {
+      const row = document.querySelector(`[data-service-id="${serviceId}"]`);
+      const serviceName = row.querySelector('.service-name').textContent;
+      const serviceUrl = row.querySelector('.service-url').getAttribute('href');
+
+      document.getElementById('serviceId').value = serviceId;
+      document.getElementById('serviceName').value = serviceName;
+      document.getElementById('serviceLink').value = serviceUrl;
+
+      const modal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+      modal.show();
+    }
+
+    function deleteService(serviceId) {
+      if (confirm('Вы уверены, что хотите удалить этот сервис?')) {
+        console.log('Удалить сервис с ID:', serviceId);
+        // Логика удаления через AJAX или перенаправление
+      }
+    }
+  </script>
 </body>
 </html>
